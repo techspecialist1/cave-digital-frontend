@@ -1,5 +1,5 @@
 import React from 'react';
-import { FormControl, Input, Text, VStack } from 'native-base';
+import { FormControl, Input } from 'native-base';
 
 const InputField = (props) => {
   const {

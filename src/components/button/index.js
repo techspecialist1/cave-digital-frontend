@@ -1,10 +1,7 @@
 import React from 'react';
 import { Button, Text, HStack } from 'native-base';
 import PropTypes from 'prop-types';
-
 import { GRAY40_COLOR, SECOUNDRY_COLOR, WHITE_COLOR } from '../../utils/color';
-// import fonts from '../../utils/style/fonts';
-// import fontSize from '../../utils/style/fontSize';
 import { ms } from '../../utils/deviceConfig';
 
 const RoundedPrimaryButton = ({
@@ -19,8 +16,6 @@ const RoundedPrimaryButton = ({
       isDisabled={disabled}
       onPress={onPress}
       bg={disabled ? GRAY40_COLOR : SECOUNDRY_COLOR}
-      borderRadius={30}
-      height={ms(54)}
       _pressed={{ opacity: 0.6 }}
       style={buttonStyle}
     >

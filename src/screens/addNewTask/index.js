@@ -1,18 +1,15 @@
-import React, { useState, useEffect } from 'react';
-import { Platform } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { Platform, SafeAreaView } from 'react-native';
 import {
-  Image,
   VStack,
   Flex,
   Box,
-  Heading,
   FormControl,
   KeyboardAvoidingView,
   Stack,
   ScrollView,
-  Text,
   View,
-  Pressable,
+  Toast,
 } from 'native-base';
 
 import styles from './styles';
@@ -20,124 +17,160 @@ import InputField from '../../components/inputField';
 import RoundedPrimaryButton from '../../components/button';
 import { REDISH_ORANGE, SILVER_COLOR, WHITE_COLOR } from '../../utils/color';
 import { ms } from '../../utils/deviceConfig';
+import HeaderComponent from '@/src/components/header';
+import { addTask } from '../../redux/taskSlice';
+import { useDispatch, useSelector } from 'react-redux';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
-const LoginScreen = (props) => {
+const AddNewTask = (props) => {
+  // console.log('JWT token add new taskk screen', props.route.params.token);
   const { navigation } = props;
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
 
-  const login = async () => {
-    console.log('login  function calling');
-    navigation.navigate('Home');
+  const dispatch = useDispatch();
+
+  const [title, setTitle] = useState('');
+  const [description, setDescription] = useState('');
+
+  const getToken = async () => {
+    try {
+      const token = await AsyncStorage.getItem('userToken');
+      if (token !== null) {
+        console.log('Token add new task retrieved:', token);
+        return token;
+      }
+      console.log('No token found add new task');
+      return null;
+    } catch (e) {
+      console.error('Error getting token add new task', e);
+      return null;
+    }
+  };
+
+  const { status, error, tasks } = useSelector((state) => state.tasks);
+
+  useEffect(() => {
+    if (status == 'succeeded') {
+      Toast.show({ description: 'New task added Successfully' });
+      setTitle('');
+      setDescription('');
+    }
+  }, [status, tasks]);
+
+  const addNewTask = async () => {
+    const task = {
+      title: title,
+      description: description,
+    };
+
+    const token = await getToken();
+
+    console.log('TT01 addNewTask function calling');
+
+    console.log('siggnup function calling', token);
+
+    dispatch(addTask({ task, token }));
+  };
+
+  const handleGoBack = () => {
+    navigation.goBack();
   };
 
   return (
-    <View
-      flex={1}
-      justifyContent={'center'}
-      alignContent={'center'}
-      backgroundColor={WHITE_COLOR}
-      paddingX={ms(32)}
-    >
-      <KeyboardAvoidingView
-        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-        style={styles.keyboardViewCss}
+    <SafeAreaView style={{ flex: 1, backgroundColor: WHITE_COLOR }}>
+      <HeaderComponent
+        title={'New Task'}
+        onBackPress={() => handleGoBack()}
+        showBackIcon={true}
+      />
+      <View
+        flex={1}
+        justifyContent={'center'}
+        alignContent={'center'}
+        backgroundColor={WHITE_COLOR}
+        paddingX={ms(12)}
       >
-        <ScrollView
-          bounces={false}
-          keyboardShouldPersistTaps={'handled'}
-          contentContainerStyle={styles.scrollViewContainerCss}
-          style={styles.scrollViewCss}
+        <KeyboardAvoidingView
+          behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+          style={styles.keyboardViewCss}
         >
-          <Flex
-            dir="column"
-            justifyContent="space-between"
-            backgroundColor={REDISH_ORANGE}
-            h="100%"
+          <ScrollView
+            bounces={false}
+            keyboardShouldPersistTaps={'handled'}
+            contentContainerStyle={styles.scrollViewContainerCss}
+            style={styles.scrollViewCss}
           >
-            <VStack
-              flex={1}
-              justifyContent={'center'}
-              backgroundColor={WHITE_COLOR}
-              // borderTopLeftRadius={20}
+            <Flex
+              dir="column"
+              justifyContent="space-between"
+              backgroundColor={REDISH_ORANGE}
+              h="100%"
             >
-              <Box>
-                <Heading textAlign={'center'}>{'Welcome'}</Heading>
-                <Stack mt={10}>
-                  <Box>
-                    <FormControl.Label>{'Email'}</FormControl.Label>
+              <VStack
+                flex={1}
+                justifyContent={'center'}
+                backgroundColor={WHITE_COLOR}
+              >
+                <Box>
+                  <Stack mt={10}>
+                    <Box>
+                      <FormControl.Label>{'Title'}</FormControl.Label>
 
-                    <InputField
-                      _focus={{
-                        backgroundColor: SILVER_COLOR,
-                        borderWidt: 1,
-                      }}
-                      borderWidth={0}
-                      type="email"
-                      autoCapitalize="none"
-                      mt={2}
-                      mb={5}
-                      height={50}
-                      fontSize={16}
-                      backgroundColor={SILVER_COLOR}
-                      variant="outline"
-                      placeholder="joe@vyakta.com"
-                      value={email}
-                      onChangeText={(value) => setEmail(value.trim())}
-                      autoFocus={true}
-                      focusBorderColor="transparent"
-                    />
-                  </Box>
-                  <Box>
-                    <FormControl.Label>{'Password'}</FormControl.Label>
-                    <InputField
-                      type="password"
-                      _focus={{
-                        backgroundColor: SILVER_COLOR,
-                        borderWidt: 1,
-                      }}
-                      borderWidth={0}
-                      mt={2}
-                      mb={5}
-                      height={50}
-                      fontSize={16}
-                      variant="outline"
-                      placeholder="*********"
-                      backgroundColor={SILVER_COLOR}
-                      focusBorderColor="transparent"
-                      outlineWidth={0}
-                      value={password}
-                      secureText
-                      onChangeText={(value) => setPassword(value.trim())}
-                    />
-                    <RoundedPrimaryButton
-                      label={'login'}
-                      // btnDisable={!valueIsEmpty(email, password)}
-                      // disabled={!valueIsEmpty(email, password)}
-                      onPress={() => login()}
-                    />
-                  </Box>
-                  <Pressable
-                    // onPress={() => navigation.replace('ResetPassword')}
-                    style={styles.resetBtnCss}
-                  >
-                    <Text style={styles.resetTextCss}>Reset Password</Text>
-                  </Pressable>
-
-                  <Pressable
-                    // onPress={() => navigation.replace('SignUp')}
-                    style={styles.signUpTochableBtn}
-                  >
-                    <Text style={styles.signUpTxtbtn}>SignUp</Text>
-                  </Pressable>
-                </Stack>
-              </Box>
-            </VStack>
-          </Flex>
-        </ScrollView>
-      </KeyboardAvoidingView>
-    </View>
+                      <InputField
+                        _focus={{
+                          backgroundColor: SILVER_COLOR,
+                          borderWidt: 1,
+                        }}
+                        borderWidth={0}
+                        autoCapitalize="none"
+                        mt={2}
+                        mb={5}
+                        height={50}
+                        fontSize={16}
+                        backgroundColor={SILVER_COLOR}
+                        variant="outline"
+                        placeholder="Please Enter Task Title"
+                        value={title}
+                        onChangeText={(value) => setTitle(value)}
+                        autoFocus={true}
+                        focusBorderColor="transparent"
+                      />
+                    </Box>
+                    <Box>
+                      <FormControl.Label>{'Description'}</FormControl.Label>
+                      <InputField
+                        _focus={{
+                          backgroundColor: SILVER_COLOR,
+                          borderWidt: 1,
+                        }}
+                        borderWidth={0}
+                        mt={2}
+                        mb={5}
+                        height={50}
+                        fontSize={16}
+                        variant="outline"
+                        placeholder="Please Enter Task Description"
+                        backgroundColor={SILVER_COLOR}
+                        focusBorderColor="transparent"
+                        outlineWidth={0}
+                        value={description}
+                        onChangeText={(value) => setDescription(value)}
+                      />
+                      <Box style={{ flexDirection: 'row' }}>
+                        <RoundedPrimaryButton
+                          label={'Add Task'}
+                          onPress={() => addNewTask()}
+                        />
+                      </Box>
+                    </Box>
+                  </Stack>
+                </Box>
+              </VStack>
+            </Flex>
+          </ScrollView>
+        </KeyboardAvoidingView>
+      </View>
+    </SafeAreaView>
   );
 };
 
-export default LoginScreen;
+export default AddNewTask;

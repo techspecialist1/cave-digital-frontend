@@ -1,7 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Platform } from 'react-native';
 import {
-  Image,
   VStack,
   Flex,
   Box,
@@ -13,6 +12,7 @@ import {
   Text,
   View,
   Pressable,
+  Toast,
 } from 'native-base';
 
 import styles from './styles';
@@ -20,12 +20,59 @@ import InputField from '../../components/inputField';
 import RoundedPrimaryButton from '../../components/button';
 import { REDISH_ORANGE, SILVER_COLOR, WHITE_COLOR } from '../../utils/color';
 import { ms } from '../../utils/deviceConfig';
+import { useDispatch, useSelector } from 'react-redux';
+import { signup } from '../../redux/authSlice';
 
-const SignUpScreen = ({ navigation }) => {
+const SignUpScreen = (props) => {
+  const dispatch = useDispatch();
+
+  const { navigation } = props;
+  const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [errorText, setErrorText] = useState('');
 
-  const login = async () => {};
+  const { status, error, user } = useSelector((state) => state.auth);
+
+  console.log('TT01 authStatus authError', status, 'authError', error);
+  console.log('TT01 user', user);
+
+  const registerUser = async () => {
+    console.log('TT01 registerUser function calling');
+    if (name !== '' && email !== '' && password !== '') {
+      const userData = {
+        name: name,
+        email: email,
+        password: password,
+      };
+      console.log('siggnup function calling', userData);
+      setErrorText('');
+
+      dispatch(signup(userData));
+    } else {
+      setErrorText('All fields are required');
+    }
+  };
+
+  const navigateToLogin = () => {
+    navigation.navigate('Login');
+  };
+
+  useEffect(() => {
+    if (status == 'succeeded') {
+      Toast.show({ description: 'You Registered Successfully' });
+
+      setName('');
+      setEmail('');
+      setPassword('');
+      setConfirmPassword('');
+
+      navigation.navigate('Login');
+    } else {
+      Toast.show({ description: error });
+    }
+  }, [status, user]);
 
   return (
     <View
@@ -55,7 +102,6 @@ const SignUpScreen = ({ navigation }) => {
               flex={1}
               justifyContent={'center'}
               backgroundColor={WHITE_COLOR}
-              // borderTopLeftRadius={20}
             >
               <Box>
                 <Heading textAlign={'center'}>{'Sign Up'}</Heading>
@@ -77,9 +123,9 @@ const SignUpScreen = ({ navigation }) => {
                       fontSize={16}
                       backgroundColor={SILVER_COLOR}
                       variant="outline"
-                      placeholder="joe@vyakta.com"
-                      value={email}
-                      onChangeText={(value) => setEmail(value.trim())}
+                      placeholder="Enter your name"
+                      value={name}
+                      onChangeText={(value) => setName(value)}
                       autoFocus={true}
                       focusBorderColor="transparent"
                     />
@@ -149,28 +195,23 @@ const SignUpScreen = ({ navigation }) => {
                         backgroundColor={SILVER_COLOR}
                         focusBorderColor="transparent"
                         outlineWidth={0}
-                        value={password}
+                        value={confirmPassword}
                         secureText
-                        onChangeText={(value) => setPassword(value.trim())}
+                        onChangeText={(value) =>
+                          setConfirmPassword(value.trim())
+                        }
                       />
                     </Box>
                     <RoundedPrimaryButton
                       label={'Sign Up'}
-                      // btnDisable={!valueIsEmpty(email, password)}
-                      // disabled={!valueIsEmpty(email, password)}
-                      onPress={() => login()}
+                      onPress={() => registerUser()}
                     />
+                    <Text style={styles.errorText}>{errorText}</Text>
                   </Box>
-                  {/* <Pressable
-                    // onPress={() => navigation.replace('ResetPassword')}
-                    style={styles.resetBtnCss}
-                  >
-                    <Text style={styles.resetTextCss}>Reset Password</Text>
-                  </Pressable> */}
 
                   <Pressable
-                    // onPress={() => navigation.replace('SignUp')}
                     style={styles.signUpTochableBtn}
+                    onPress={() => navigateToLogin()}
                   >
                     <Text style={styles.signUpTxtbtn}>
                       Already have an account?{' '}

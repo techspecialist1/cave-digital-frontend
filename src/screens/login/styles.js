@@ -22,19 +22,15 @@ const styles = StyleSheet.create({
     color: SECOUNDRY_COLOR,
     fontSize: ms(14),
     fontWeight: '400',
-    // fontFamily: 'SpaceMono',
-    // ...fontSize.fontSizeRegular(),
-    // ...fonts.fontFamilyRegular(),
   },
 
   signUpTxtbtn: {
     color: COLOR_BLACK,
-    // ...fontSize.fontSizeMedium(),
-    // ...fonts.fontFamilyRegular(),
   },
   keyboardViewCss: { justifyContent: 'center', flex: 1 },
   scrollViewContainerCss: { flexGrow: 1, paddingBottom: ms(50) },
   scrollViewCss: { flex: 1 },
+  errorText: { color: '#FF0000' },
 });
 
 export default styles;

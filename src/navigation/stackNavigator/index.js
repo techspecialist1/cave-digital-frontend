@@ -2,8 +2,8 @@
 
 import React from 'react';
 import { createStackNavigator } from '@react-navigation/stack';
-import { NavigationContainer } from '@react-navigation/native';
 import {
+  AddNewTask,
   HomeScreen,
   LoginScreen,
   SignUpScreen,
@@ -20,8 +20,9 @@ const AppNavigator = () => {
     >
       <Stack.Screen name="Home" component={HomeScreen} />
       <Stack.Screen name="Login" component={LoginScreen} />
-      <Stack.Screen name="Registration" component={SignUpScreen} />
+      <Stack.Screen name="Signup" component={SignUpScreen} />
       <Stack.Screen name="TaskDetailScreen" component={TaskDetailScreen} />
+      <Stack.Screen name="AddNewTask" component={AddNewTask} />
     </Stack.Navigator>
   );
 };

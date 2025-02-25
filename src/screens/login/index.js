@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Platform } from 'react-native';
 import {
-  Image,
   VStack,
   Flex,
   Box,
@@ -13,6 +12,7 @@ import {
   Text,
   View,
   Pressable,
+  Toast,
 } from 'native-base';
 
 import styles from './styles';
@@ -20,15 +20,87 @@ import InputField from '../../components/inputField';
 import RoundedPrimaryButton from '../../components/button';
 import { REDISH_ORANGE, SILVER_COLOR, WHITE_COLOR } from '../../utils/color';
 import { ms } from '../../utils/deviceConfig';
+import { login } from '../../redux/authSlice';
+import { useDispatch, useSelector } from 'react-redux';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const LoginScreen = (props) => {
+  const dispatch = useDispatch();
+
   const { navigation } = props;
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [errorText, setErrorText] = useState('');
 
-  const login = async () => {
-    console.log('login  function calling');
-    navigation.navigate('Home');
+  const { status, error, user } = useSelector((state) => state.auth);
+
+  console.log('TT01 authStatus authError', status, 'authError', error);
+  console.log('TT01 user', user);
+
+  const saveToken = async (token) => {
+    try {
+      await AsyncStorage.setItem('userToken', token);
+      console.log('Token saved successfully');
+    } catch (e) {
+      console.error('Error saving token', e);
+    }
+  };
+
+  const getToken = async () => {
+    try {
+      const token = await AsyncStorage.getItem('userToken');
+      if (token !== null) {
+        console.log('Token retrieved:', token);
+
+        setEmail('');
+        setPassword('');
+
+        navigation.navigate('Home');
+
+        return token;
+      }
+      console.log('No token found');
+      return null;
+    } catch (e) {
+      console.error('Error getting token', e);
+      return null;
+    }
+  };
+
+  useEffect(() => {
+    getToken();
+  }, []);
+
+  useEffect(() => {
+    if (status == 'succeeded') {
+      Toast.show({ description: 'LoggedIn Successfully' });
+      saveToken(user.data.accessToken);
+      navigation.navigate('Home');
+    } else {
+      if (error) {
+        Toast.show({ description: error });
+      }
+    }
+  }, [status, user]);
+
+  const loginUser = async () => {
+    console.log('TT01 login function calling');
+    if (email !== '' && password !== '') {
+      const userData = {
+        email: email,
+        password: password,
+      };
+      console.log('siggnup function calling', userData);
+      setErrorText('');
+
+      dispatch(login(userData));
+    } else {
+      setErrorText('All fields are required');
+    }
+  };
+
+  const openSignupScreen = async () => {
+    navigation.navigate('Signup');
   };
 
   return (
@@ -59,7 +131,6 @@ const LoginScreen = (props) => {
               flex={1}
               justifyContent={'center'}
               backgroundColor={WHITE_COLOR}
-              // borderTopLeftRadius={20}
             >
               <Box>
                 <Heading textAlign={'center'}>{'Welcome'}</Heading>
@@ -112,21 +183,17 @@ const LoginScreen = (props) => {
                     />
                     <RoundedPrimaryButton
                       label={'login'}
-                      // btnDisable={!valueIsEmpty(email, password)}
-                      // disabled={!valueIsEmpty(email, password)}
-                      onPress={() => login()}
+                      onPress={() => loginUser()}
                     />
+                    <Text style={styles.errorText}>{errorText}</Text>
                   </Box>
-                  <Pressable
-                    // onPress={() => navigation.replace('ResetPassword')}
-                    style={styles.resetBtnCss}
-                  >
+                  <Pressable style={styles.resetBtnCss}>
                     <Text style={styles.resetTextCss}>Reset Password</Text>
                   </Pressable>
 
                   <Pressable
-                    // onPress={() => navigation.replace('SignUp')}
                     style={styles.signUpTochableBtn}
+                    onPress={() => openSignupScreen()}
                   >
                     <Text style={styles.signUpTxtbtn}>SignUp</Text>
                   </Pressable>
