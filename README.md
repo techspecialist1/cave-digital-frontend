@@ -1,50 +1,47 @@
-# Welcome to your Expo app 👋
+# Cave Digital Test Task
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+This is a test task, created to provide a demo for signup, login and Tasks CRUD operations.
 
-## Get started
+Note:
 
-1. Install dependencies
+1: Node version used : 18.20.5, Pod version used : 1.15.2
 
-   ```bash
-   npm install
-   ```
+2: Expo Go App - Install the Expo Go app on your mobile device (iOS/Android).
 
-2. Start the app
+For iOS: Download from the App Store.
+For Android: Download from the Google Play Store.
 
-   ```bash
-    npx expo start
-   ```
+## Technologies used
 
-In the output, you'll find options to open the app in a
+- React Native
 
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
+### How to run the app
 
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
+- Run these Commands before installing app:
 
-## Get a fresh project
+#### With Yarn:
 
-When you're ready, run:
+`yarn install`
 
-```bash
-npm run reset-project
-```
+#### With npm:
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+`npm install`
 
-## Learn more
+- Installation commands:
 
-To learn more about developing your project with Expo, look at the following resources:
+3: To start the development server, run the following command:.
 
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
+`npm run start`
 
-## Join the community
+This will open a new browser window with the Expo Developer Tools, where you can:
 
-Join our community of developers creating universal apps.
+Scan the QR code with the Expo Go app on your mobile device (iOS or Android).
+Alternatively, you can run the app in an emulator if you have one set up.
 
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+4: Alternatively, Open in Emulator/Simulator:
+
+For iOS: Press i in the terminal to open the app in the iOS simulator (make sure you have Xcode installed).
+
+For Android: Press a in the terminal to open the app in an Android emulator (make sure you have Android Studio installed).
+
+#### Now you are all set!
