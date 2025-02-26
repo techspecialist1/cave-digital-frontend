@@ -34,13 +34,9 @@ const LoginScreen = (props) => {
 
   const { status, error, user } = useSelector((state) => state.auth);
 
-  console.log('TT01 authStatus authError', status, 'authError', error);
-  console.log('TT01 user', user);
-
   const saveToken = async (token) => {
     try {
       await AsyncStorage.setItem('userToken', token);
-      console.log('Token saved successfully');
     } catch (e) {
       console.error('Error saving token', e);
     }
@@ -50,8 +46,6 @@ const LoginScreen = (props) => {
     try {
       const token = await AsyncStorage.getItem('userToken');
       if (token !== null) {
-        console.log('Token retrieved:', token);
-
         setEmail('');
         setPassword('');
 
@@ -59,7 +53,6 @@ const LoginScreen = (props) => {
 
         return token;
       }
-      console.log('No token found');
       return null;
     } catch (e) {
       console.error('Error getting token', e);
@@ -84,13 +77,11 @@ const LoginScreen = (props) => {
   }, [status, user]);
 
   const loginUser = async () => {
-    console.log('TT01 login function calling');
     if (email !== '' && password !== '') {
       const userData = {
         email: email,
         password: password,
       };
-      console.log('siggnup function calling', userData);
       setErrorText('');
 
       dispatch(login(userData));

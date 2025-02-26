@@ -23,7 +23,6 @@ import { useDispatch, useSelector } from 'react-redux';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const AddNewTask = (props) => {
-  // console.log('JWT token add new taskk screen', props.route.params.token);
   const { navigation } = props;
 
   const dispatch = useDispatch();
@@ -35,13 +34,10 @@ const AddNewTask = (props) => {
     try {
       const token = await AsyncStorage.getItem('userToken');
       if (token !== null) {
-        console.log('Token add new task retrieved:', token);
         return token;
       }
-      console.log('No token found add new task');
       return null;
     } catch (e) {
-      console.error('Error getting token add new task', e);
       return null;
     }
   };
@@ -63,10 +59,6 @@ const AddNewTask = (props) => {
     };
 
     const token = await getToken();
-
-    console.log('TT01 addNewTask function calling');
-
-    console.log('siggnup function calling', token);
 
     dispatch(addTask({ task, token }));
   };

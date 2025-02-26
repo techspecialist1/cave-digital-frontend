@@ -17,16 +17,12 @@ const apiCall = async (url, method, body) => {
 };
 
 export const login = createAsyncThunk('auth/login', async (credentials) => {
-  console.log('Attempting login with credentials', credentials);
   const data = await apiCall(`${BASE_URL}/auth/login`, 'POST', credentials);
-  console.log('Signup response data', data);
   return data;
 });
 
 export const signup = createAsyncThunk('auth/signup', async (credentials) => {
-  console.log('Attempting signup with credentials', credentials);
   const data = await apiCall(`${BASE_URL}/auth/signup`, 'POST', credentials);
-  console.log('Signup response data', data);
   return data;
 });
 

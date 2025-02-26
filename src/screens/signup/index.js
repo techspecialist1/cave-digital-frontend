@@ -35,18 +35,13 @@ const SignUpScreen = (props) => {
 
   const { status, error, user } = useSelector((state) => state.auth);
 
-  console.log('TT01 authStatus authError', status, 'authError', error);
-  console.log('TT01 user', user);
-
   const registerUser = async () => {
-    console.log('TT01 registerUser function calling');
     if (name !== '' && email !== '' && password !== '') {
       const userData = {
         name: name,
         email: email,
         password: password,
       };
-      console.log('siggnup function calling', userData);
       setErrorText('');
 
       dispatch(signup(userData));

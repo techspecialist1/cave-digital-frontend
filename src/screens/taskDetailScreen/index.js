@@ -9,6 +9,7 @@ import {
   Stack,
   ScrollView,
   View,
+  Toast,
 } from 'native-base';
 
 import styles from './styles';
@@ -19,11 +20,9 @@ import { ms } from '../../utils/deviceConfig';
 import HeaderComponent from '@/src/components/header';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useDispatch, useSelector } from 'react-redux';
-import { deleteTask, getTaskById, editTask } from '../../redux/taskSlice';
+import { deleteTask, getTaskById, editTaskById } from '../../redux/taskSlice';
 
 const TaskDetailScreen = (props) => {
-  console.log('task detail screen task is', props.route.params.task._id);
-
   const dispatch = useDispatch();
 
   const { navigation } = props;
@@ -31,29 +30,22 @@ const TaskDetailScreen = (props) => {
   const [description, setDescription] = useState('');
   const [taskId, setTaskId] = useState('');
   const [token, setToken] = useState('');
+  const [deleted, setDeleted] = useState('');
 
   const { status, error, tasks } = useSelector((state) => state.tasks);
 
   useEffect(() => {
     if (status == 'succeeded') {
-      // Toast.show({ description: 'New task added Successfully' });
-      // setTitle('');
-      // setDescription('');
+      if (tasks?.message === 'Task has been updated') {
+        Toast.show({ description: tasks?.message });
+      } else if (deleted) {
+        Toast.show({ description: 'Task deleted Successfully' });
+        setDeleted(false);
+        setTitle('');
+        setDescription('');
+      }
     }
-    console.log(
-      'TT01 task detail screen',
-      tasks,
-      'status',
-      status,
-      'error',
-      error
-    );
   }, [status, tasks]);
-
-  const login = async () => {
-    console.log('login  function calling');
-    navigation.navigate('Home');
-  };
 
   const handleGoBack = () => {
     navigation.goBack();
@@ -63,48 +55,38 @@ const TaskDetailScreen = (props) => {
     try {
       const token = await AsyncStorage.getItem('userToken');
       if (token !== null) {
-        console.log('Token retrieved:', token);
         return token;
       }
-      console.log('No token found');
       return null;
     } catch (e) {
-      console.error('Error getting token', e);
       return null;
     }
   };
 
   const fetchTaskById = async () => {
-    console.log('TT01 login function calling');
+    const token = await getToken();
+    const id = props?.route?.params?.task?._id;
 
-    const JWTToken = await getToken();
-
-    console.log('siggnup function calling', JWTToken);
-
-    dispatch(getTaskById({ taskId, JWTToken }));
+    dispatch(getTaskById({ id, token }));
   };
 
   const editTask = async () => {
-    console.log('TT01 login function calling');
     const data = {
       title: title,
       description: description,
     };
     const JWTToken = await getToken();
+    const taskId = props?.route?.params?.task?._id;
 
-    console.log('siggnup function calling', JWTToken);
-
-    dispatch(editTask({ data, JWTToken }));
+    dispatch(editTaskById({ taskId, task: data, token: JWTToken }));
   };
 
   const deleteSelectedTask = async () => {
-    console.log('TT01 login function calling');
-
     const JWTToken = await getToken();
 
-    console.log('siggnup function calling', JWTToken);
+    setDeleted(true);
 
-    dispatch(deleteTask({ taskId, JWTToken }));
+    dispatch(deleteTask({ taskId, token: JWTToken }));
   };
 
   useEffect(() => {
@@ -114,9 +96,6 @@ const TaskDetailScreen = (props) => {
     setDescription(props?.route?.params?.task?.description);
     fetchTaskById();
   }, []);
-
-  console.log('Task id is', taskId);
-  console.log(' token is', token);
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: WHITE_COLOR }}>

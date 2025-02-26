@@ -27,25 +27,15 @@ const HomeScreen = (props) => {
 
   const { status, error, tasks } = useSelector((state) => state.tasks);
 
-  // console.log(
-  //   'TT01 homescreen authStatus authError',
-  //   status,
-  //   'authError',
-  //   error
-  // );
-  // console.log('TT01 homescreen tasks', tasks);
-
   const removeToken = async () => {
     try {
       await AsyncStorage.removeItem('userToken');
-      console.log('Token removed successfully');
     } catch (e) {
       console.error('Error removing token', e);
     }
   };
 
   const handleLogout = async () => {
-    console.log('handleLogout calling');
     await removeToken();
     navigation.reset({
       index: 0,
@@ -57,25 +47,18 @@ const HomeScreen = (props) => {
     try {
       const token = await AsyncStorage.getItem('userToken');
       if (token !== null) {
-        console.log('Token retrieved:', token);
         return token;
       }
-      console.log('No token found');
       return null;
     } catch (e) {
-      console.error('Error getting token', e);
       return null;
     }
   };
 
   const fetchAllTasks = async () => {
-    console.log('TT01 login function calling');
-
     const token = await getToken();
 
     setJWTToken(token);
-
-    console.log('siggnup function calling', token);
 
     dispatch(getAllTasks(token));
   };
@@ -89,7 +72,6 @@ const HomeScreen = (props) => {
   };
 
   const showTaskDetail = (item) => {
-    console.log('showTaskDetail calling', item);
     navigation.navigate('TaskDetailScreen', { task: item });
   };
 
