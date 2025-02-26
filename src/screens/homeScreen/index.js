@@ -115,16 +115,12 @@ const HomeScreen = (props) => {
           // contentContainerStyle={styles.container}
           ListEmptyComponent={emptyComponent}
         />
-        {data.length > 0 && (
-          <Button
-            style={styles.button}
-            onPress={() =>
-              navigation.navigate('AddNewTask', { token: JWTToken })
-            }
-          >
-            <Text style={styles.buttonText}>Add New Task</Text>
-          </Button>
-        )}
+        <Button
+          style={styles.button}
+          onPress={() => navigation.navigate('AddNewTask', { token: JWTToken })}
+        >
+          <Text style={styles.buttonText}>Add New Task</Text>
+        </Button>
       </View>
     </SafeAreaView>
   );
